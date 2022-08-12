@@ -54,23 +54,13 @@ app.add_middleware(
 async def favicon():
     raise fastapi.HTTPException(status_code=404)
 
+
 @app.get("/")
 async def main_root():
     return fastapi.responses.RedirectResponse(url="/docs")
 
 
-@app.get("/info/{igsn:path}", response_model=igsnresolve.IGSNInfo)
-async def igsn_info(
-    igsn: str, accept: typing.Union[str, None] = fastapi.Header(default=None)
-):
-    """
-    Return info about an IGSN from the handle system
-    """
-    info = await igsnresolve.resolveIgsn(igsn)
-    return info
-
-
-@app.get("/infos/{igsn_str:path}")
+@app.get("/info/{igsn_str:path}", response_model=typing.List[igsnresolve.IGSNInfo])
 async def igsn_info(
     igsn_str: str, accept: typing.Union[str, None] = fastapi.Header(default=None)
 ):
