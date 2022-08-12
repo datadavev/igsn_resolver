@@ -49,7 +49,10 @@ class IGSNInfo(pydantic.BaseModel):
         """
         p, v = self.parse()
         self.handle = f"{p}/{v}"
-        self.normalized = f"IGSN:{self.handle}"
+        scheme = "igsn"
+        if p.startswith("10."):
+            scheme = "doi"
+        self.normalized = f"{scheme}:{self.handle}"
         return p, v
 
     async def resolve(self, client:httpx.AsyncClient)->bool:
