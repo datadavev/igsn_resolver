@@ -50,7 +50,7 @@ async def favicon():
     raise fastapi.HTTPException(status_code=404)
 
 
-@app.get("/info/{igsn}", response_model=igsnresolve.IGSNInfo)
+@app.get("/info/{igsn:path}", response_model=igsnresolve.IGSNInfo)
 async def igsn_info(
     igsn: str, accept: typing.Union[str, None] = fastapi.Header(default=None)
 ):
@@ -58,7 +58,7 @@ async def igsn_info(
     return info
 
 
-@app.get("/{igsn}")
+@app.get("/{igsn:path}")
 async def resolve(
     igsn: str, request: fastapi.Request, accept: typing.Union[str, None] = fastapi.Header(default=None)
 ):
