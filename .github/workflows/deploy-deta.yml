@@ -32,5 +32,6 @@ jobs:
         with:
           deta-access-token: ${{ secrets.DETA_TOKEN }}
           deta-name: 'igsn_resolver'
+          deta_project: 'igsn'
           deta-project-dir: './app'
     
