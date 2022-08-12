@@ -87,6 +87,7 @@ async def igsn_info(
 
 @app.get("/{igsn:path}")
 async def resolve(
+    request: fastapi.Request,
     igsn: str, accept_profile: typing.Union[str, None] = fastapi.Header(default=None)
 ):
     """
@@ -103,7 +104,7 @@ async def resolve(
         prefix, value = info.parse()
         url = f"https://hdl.handle.net/{prefix}/{value}"
         _link = [
-            f'<{info.target}>; rel="canonical"',
+            f'<{request.url}>; rel="canonical"',
             f'</info/{info.normalized}>; type="application/json"; rel="alternate"; profile="{INFO_PROFILE}"',
             f'<{url}>; rel="alternate" profile="{DATACITE_PROFILE}"',
         ]
