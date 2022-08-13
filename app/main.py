@@ -60,7 +60,7 @@ async def main_root():
     return fastapi.responses.RedirectResponse(url="/docs")
 
 
-@app.get("/info/{igsn_str:path}", response_model=typing.List[igsnresolve.IGSNInfo])
+@app.get("/.info/{igsn_str:path}", response_model=typing.List[igsnresolve.IGSNInfo])
 async def igsn_info(
     igsn_str: str, accept: typing.Union[str, None] = fastapi.Header(default=None)
 ):
@@ -89,30 +89,23 @@ async def resolve(
     If an `Accept-Profile` header with value `https://schema.datacite.org/` is provided,
     then the request is redirected to `hdl.handle.net`.
     """
+    info = igsnresolve.IGSNInfo(original=igsn)
+    prefix, value = info.normalize()
+    url = f"https://hdl.handle.net/{prefix}/{value}"
+    _link = [
+        f'<{request.url}>; rel="canonical"',
+        f'</.info/{info.normalized}>; type="application/json"; rel="alternate"; profile="{INFO_PROFILE}"',
+        f'<{url}>; rel="alternate" profile="{DATACITE_PROFILE}"',
+    ]
+    headers = {
+        "Link": ", ".join(_link)
+    }
     if accept_profile == DATACITE_PROFILE:
-        info = igsnresolve.IGSNInfo(original=igsn)
-        prefix, value = info.parse()
-        url = f"https://hdl.handle.net/{prefix}/{value}"
-        _link = [
-            f'<{request.url}>; rel="canonical"',
-            f'</info/{info.normalized}>; type="application/json"; rel="alternate"; profile="{INFO_PROFILE}"',
-            f'<{url}>; rel="alternate" profile="{DATACITE_PROFILE}"',
-        ]
-        headers = {
-            "Link": ", ".join(_link)
-        }
+        # Redirect to handle system, which 
         return fastapi.responses.RedirectResponse(url, headers=headers)
     try:
-        info = await igsnresolve.resolveIgsn(igsn)
+        info = await igsnresolve.resolve(info)
         if info.target is not None:
-            _link = [
-                f'<{info.target}>; rel="canonical"',
-                f'</info/{info.normalized}>; type="application/json"; rel="alternate"; profile="{INFO_PROFILE}"',
-                f'<https://hdl.handle.net/{info.handle}>; rel="alternate" profile="{DATACITE_PROFILE}"',
-            ]
-            headers = {
-                "Link": ", ".join(_link)
-            }
             if accept_profile == INFO_PROFILE:
                 return info
             return fastapi.responses.RedirectResponse(info.target, headers=headers)
