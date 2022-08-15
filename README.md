@@ -78,7 +78,16 @@ The resolve endpoint `/{identifier}` accepts a single identifier string and retu
 curl -v -q "https://ule1dz.deta.dev/au1234"
 ...
 < HTTP/1.1 307 Temporary Redirect
-< Link: <https://ule1dz.deta.dev/au1234>; rel="canonical", </.info/igsn:10273/au1234>; type="application/json"; rel="alternate"; profile="https://igsn.org/info", <https://hdl.handle.net/au1234/10273>; rel="alternate" profile="https://schema.datacite.org/"
+< Link: 
+    <https://ule1dz.deta.dev/au1234>; 
+        rel="canonical", 
+    </.info/igsn:10273/au1234>; 
+        type="application/json"; 
+        rel="alternate"; 
+        profile="https://igsn.org/info", 
+    <https://hdl.handle.net/au1234/10273>; 
+        rel="alternate"; 
+        profile="https://schema.datacite.org/"
 < Location: http://www.ga.gov.au/sample-catalogue/10273/AU1234
 ```
 Note the `Link` header response which provides a hint to the client about alternate locations and profiles for accessing information about the identified resource as described below.
@@ -134,7 +143,16 @@ Resolving the same identifier with this `igsn-resolver` service results in the e
 curl -q -v -H "Accept: application/ld+json" "https://ule1dz.deta.dev/10.1594/PANGAEA.930327"
 ...
 < HTTP/1.1 307 Temporary Redirect
-< Link: <https://ule1dz.deta.dev/10.1594/PANGAEA.930327>; rel="canonical", </.info/doi:10.1594/PANGAEA.930327>; type="application/json"; rel="alternate"; profile="https://igsn.org/info", <https://hdl.handle.net/PANGAEA.930327/10.1594>; rel="alternate" profile="https://schema.datacite.org/"
+< Link: 
+    <https://ule1dz.deta.dev/10.1594/PANGAEA.930327>; 
+        rel="canonical", 
+    </.info/doi:10.1594/PANGAEA.930327>; 
+        type="application/json"; 
+        rel="alternate"; 
+        profile="https://igsn.org/info", 
+    <https://hdl.handle.net/PANGAEA.930327/10.1594>; 
+        rel="alternate"; 
+        profile="https://schema.datacite.org/"
 < Location: https://doi.pangaea.de/10.1594/PANGAEA.930327
 ```
 
@@ -147,7 +165,16 @@ curl -q -v -H "Accept: application/ld+json" \
   "https://ule1dz.deta.dev/10.1594/PANGAEA.930327"
 ...
 < HTTP/1.1 307 Temporary Redirect
-< Link: <https://ule1dz.deta.dev/10.1594/PANGAEA.930327>; rel="canonical", </.info/doi:10.1594/PANGAEA.930327>; type="application/json"; rel="alternate"; profile="https://igsn.org/info", <https://hdl.handle.net/PANGAEA.930327/10.1594>; rel="alternate" profile="https://schema.datacite.org/"
+< Link: 
+    <https://ule1dz.deta.dev/10.1594/PANGAEA.930327>; 
+        rel="canonical", 
+    </.info/doi:10.1594/PANGAEA.930327>; 
+        type="application/json"; 
+        rel="alternate"; 
+        profile="https://igsn.org/info", 
+    <https://hdl.handle.net/PANGAEA.930327/10.1594>; 
+        rel="alternate"; 
+        profile="https://schema.datacite.org/"
 < Location: https://hdl.handle.net/PANGAEA.930327/10.1594  
 ```
 
