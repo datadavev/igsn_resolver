@@ -67,7 +67,8 @@ export class IdentifierResolver extends LitElement {
 
   followIdentifier() {
     if (this._target !== null) {
-      window.location.href = this._target;
+      //window.location.href = this._target;
+      window.open(this._target, "_blank");
     }
   }
 
