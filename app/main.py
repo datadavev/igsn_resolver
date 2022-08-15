@@ -50,12 +50,12 @@ app.add_middleware(
 )
 
 
-@app.get("/favicon.ico")
+@app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
     raise fastapi.HTTPException(status_code=404)
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 async def main_root():
     return fastapi.responses.RedirectResponse(url="/docs")
 
@@ -101,7 +101,7 @@ async def resolve(
         "Link": ", ".join(_link)
     }
     if accept_profile == DATACITE_PROFILE:
-        # Redirect to handle system, which 
+        # Redirect to handle system, which
         return fastapi.responses.RedirectResponse(url, headers=headers)
     try:
         info = await igsnresolve.resolve(info)
