@@ -36,11 +36,7 @@ jobs:
         run: |
           cp -r identifier-resolver/src docs/
           cp identifier-resolver/identifier-resolver.js docs/
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          # Upload entire repository
-          path: 'docs'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@main
+          folder: docs
