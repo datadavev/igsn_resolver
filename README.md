@@ -84,8 +84,6 @@ curl -q -v -H "Accept: text/html" "https://hdl.handle.net/10.1594/PANGAEA.930327
 < HTTP/2 302
 < vary: Accept
 < location: https://doi.pangaea.de/10.1594/PANGAEA.930327
-
-
 ```
 
 If instead a content-type of `application/ld+json` is requested, the location of DataCite metadata is returned instead of the identified resource:
