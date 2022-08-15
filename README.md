@@ -2,9 +2,10 @@
 
 Performs IGSN resolution by leveraging the Handle System API.
 
+`igsn_resolver` provides a simple proof of concept for an IGSN resolver service implemented using [FastAPI](https://fastapi.tiangolo.com/), deployable to [deta.sh](https://www.deta.sh/), and using the [handle.net](https://handle.net/proxy_servlet.html) resolution infrastructure while still respecting the expected behavior of content negotiation in anticipation of pending migration of IGSN to DOI infrastructure hosted by [DataCite](https://datacite.org/).
+
 ![Context Diagram](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/context.puml)
 
-Provides a proof of concept for a simple IGSN resolver service implemented using [FastAPI](https://fastapi.tiangolo.com/) and deployable to [deta.sh](https://www.deta.sh/).
 
 A test instance is deployed at [https://ule1dz.deta.dev/](https://ule1dz.deta.dev/). It supports two endpoints, one for redirection, the other for basic metadata. These are described in the API documenation at [https://ule1dz.deta.dev/docs](https://ule1dz.deta.dev/docs).
 
