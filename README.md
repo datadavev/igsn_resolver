@@ -7,7 +7,9 @@ Performs IGSN resolution by leveraging the Handle System API.
 ![Context Diagram](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/context.puml)
 
 
-A test instance is deployed at [https://ule1dz.deta.dev/](https://ule1dz.deta.dev/). It supports two endpoints, one for redirection, the other for basic metadata. These are described in the API documenation at [https://ule1dz.deta.dev/docs](https://ule1dz.deta.dev/docs).
+A test instance is deployed at [https://ule1dz.deta.dev/](https://ule1dz.deta.dev/). It supports two endpoints, one for redirection, the other for basic metadata. These methods are described in the API documenation at [https://ule1dz.deta.dev/docs](https://ule1dz.deta.dev/docs).
+
+A simple UI is deployed to GitHub pages at [https://datadavev.github.io/igsn_resolver/](https://datadavev.github.io/igsn_resolver/).
 
 IGSN identifier strings may be formatted like:
 
