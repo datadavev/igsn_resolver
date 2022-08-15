@@ -1,4 +1,4 @@
-import { html, css, LitElement } from 'lit';
+import { html, css, LitElement } from 'https://unpkg.com/lit-html?module';
 
 export class IdentifierResolver extends LitElement {
   static get styles() {
