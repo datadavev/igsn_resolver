@@ -15,7 +15,7 @@ import fastapi.responses
 import fastapi.middleware.cors
 import igsnresolve
 
-logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
+logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 L = logging.getLogger("resolver")
 
 MAX_PER_REQUEST = 50
@@ -26,14 +26,11 @@ app = fastapi.FastAPI(
     title="IGSN Resolver",
     description=__doc__,
     version="0.4.1",
-    contact={
-        "name":"Dave Vieglais",
-        "url": "https://github.com/datadavev/"
-    },
+    contact={"name": "Dave Vieglais", "url": "https://github.com/datadavev/"},
     license_info={
-        "name":"Apache 2.0",
-        "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-    }
+        "name": "Apache 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+    },
 )
 app.add_middleware(
     fastapi.middleware.cors.CORSMiddleware,
@@ -70,7 +67,9 @@ async def igsn_info(
     A request with more than 50 identifiers raises a 400 error.
     """
     if identifier.count(";") > MAX_PER_REQUEST:
-        return fastapi.HTTPException(status_code=400, detail="Too many items in request")
+        return fastapi.HTTPException(
+            status_code=400, detail="Too many items in request"
+        )
     igsn_strs = identifier.split(";")
     return await igsnresolve.resolveIGSNs(igsn_strs)
 
@@ -78,7 +77,8 @@ async def igsn_info(
 @app.get("/{identifier:path}")
 async def resolve(
     request: fastapi.Request,
-    identifier: str, accept_profile: typing.Union[str, None] = fastapi.Header(default=None)
+    identifier: str,
+    accept_profile: typing.Union[str, None] = fastapi.Header(default=None),
 ):
     """
     Resolve the provided IGSN and redirect to the target.
@@ -97,9 +97,7 @@ async def resolve(
         f'</.info/{info.normalized}>; type="application/json"; rel="alternate"; profile="{INFO_PROFILE}"',
         f'<{url}>; rel="alternate"; profile="{DATACITE_PROFILE}"',
     ]
-    headers = {
-        "Link": ", ".join(_link)
-    }
+    headers = {"Link": ", ".join(_link)}
     if accept_profile == DATACITE_PROFILE:
         # Redirect to handle system, which
         return fastapi.responses.RedirectResponse(url, headers=headers)
@@ -113,6 +111,3 @@ async def resolve(
     except Exception as e:
         L.exception(e)
         raise fastapi.HTTPException(status_code=500, detail="Error processing request.")
-
-
-

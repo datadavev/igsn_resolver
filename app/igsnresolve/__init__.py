@@ -95,6 +95,7 @@ class IGSNInfo(pydantic.BaseModel):
                 self.timestamp = vals[0].get("timestamp", None)
         return True
 
+
 async def resolve(igsn: typing.Union[str, IGSNInfo]) -> IGSNInfo:
     """
     Given an IGSN string or IGSNInfo instance, return
