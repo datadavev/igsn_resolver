@@ -83,7 +83,9 @@ curl -v -q "https://ule1dz.deta.dev/au1234"
 ```
 Note the `Link` header response which provides a hint to the client about alternate locations and profiles for accessing information about the identified resource as described below.
 
-The behavior of this method can be modified by an optional `Accept-Profile` header sent by the client. 
+The behavior of this method can be modified by an optional `Accept-Profile` header[^1] sent by the client. 
+
+[^1]: Content Negotiation by Profile is currently a W3C draft, https://www.w3.org/TR/dx-prof-conneg/ 
 
 If the client includes an `Accept-Profile` header of `https://igsn.org/info` the response is the same as a call to the `/.info/{identifier}` endpoint. For example:
 
