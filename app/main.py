@@ -10,6 +10,7 @@ Run me like: `uvicorn main:app --reload`
 """
 import logging.config
 import typing
+import urllib.parse
 import fastapi
 import fastapi.responses
 import fastapi.middleware.cors
@@ -21,11 +22,12 @@ L = logging.getLogger("resolver")
 MAX_PER_REQUEST = 50
 INFO_PROFILE = "https://igsn.org/info"
 DATACITE_PROFILE = "https://schema.datacite.org/"
+URL_SAFE_CHARS = ":/%#?=@[]!$&'()*+,;"
 
 app = fastapi.FastAPI(
     title="IGSN Resolver",
     description=__doc__,
-    version="0.4.1",
+    version="0.5.0",
     contact={"name": "Dave Vieglais", "url": "https://github.com/datadavev/"},
     license_info={
         "name": "Apache 2.0",
@@ -70,8 +72,8 @@ async def igsn_info(
         return fastapi.HTTPException(
             status_code=400, detail="Too many items in request"
         )
-    igsn_strs = identifier.split(";")
-    return await igsnresolve.resolveIGSNs(igsn_strs)
+    identifier_strs = identifier.split(";")
+    return await igsnresolve.resolveIGSNs(identifier_strs)
 
 
 @app.get("/{identifier:path}")
@@ -91,7 +93,7 @@ async def resolve(
     """
     info = igsnresolve.IGSNInfo(original=identifier)
     prefix, value = info.normalize()
-    url = f"https://hdl.handle.net/{prefix}/{value}"
+    url = urllib.parse.quote(f"https://hdl.handle.net/{prefix}/{value}", safe=URL_SAFE_CHARS)
     _link = [
         f'<{request.url}>; rel="canonical"',
         f'</.info/{info.normalized}>; type="application/json"; rel="alternate"; profile="{INFO_PROFILE}"',
@@ -100,13 +102,25 @@ async def resolve(
     headers = {"Link": ", ".join(_link)}
     if accept_profile == DATACITE_PROFILE:
         # Redirect to handle system, which
-        return fastapi.responses.RedirectResponse(url, headers=headers)
+        headers["Location"] = url
+        return fastapi.responses.Response(
+            content=info.json(),
+            status_code=307,
+            headers=headers,
+            media_type="application/json",
+        )
     try:
         info = await igsnresolve.resolve(info)
         if info.target is not None:
             if accept_profile == INFO_PROFILE:
-                return info
-            return fastapi.responses.RedirectResponse(info.target, headers=headers)
+                return fastapi.responses.JSONResponse(content=info, headers=headers)
+            headers["Location"] = urllib.parse.quote(info.target, safe=URL_SAFE_CHARS)
+            return fastapi.responses.Response(
+                content=info.json(),
+                status_code=307,
+                headers=headers,
+                media_type="application/json",
+            )
         raise fastapi.HTTPException(status_code=404, detail=dict(info))
     except Exception as e:
         L.exception(e)
