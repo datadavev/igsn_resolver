@@ -1,0 +1,11 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+Person(user, "User")
+System(rigsn, "igsn_resolver")
+System_Ext(hdl, "Handle Resolver")
+System_Ext(target, "Target")
+Rel(user, rigsn, "Resolve IGSN")
+Rel(rigsn, hdl, "Lookup IGSN information")
+Rel(user, target, "Access target")
+Rel(hdl, target, "Has information about target")
+@enduml
