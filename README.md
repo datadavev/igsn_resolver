@@ -6,7 +6,7 @@ Performs IGSN resolution by leveraging the Handle System API.
 
 Provides a proof of concept for a simple IGSN resolver service implemented using [FastAPI](https://fastapi.tiangolo.com/) and deployable to [deta.sh](https://www.deta.sh/).
 
-A test instance is deployed at [https://ule1dz.deta.dev/](https://ule1dz.deta.dev/). It supports two endpoints, one for redirection, the other for basic metadata. These are described in the API documenation at [https://ule1dz.deta.dev/docs/](https://ule1dz.deta.dev/docs/).
+A test instance is deployed at [https://ule1dz.deta.dev/](https://ule1dz.deta.dev/). It supports two endpoints, one for redirection, the other for basic metadata. These are described in the API documenation at [https://ule1dz.deta.dev/docs](https://ule1dz.deta.dev/docs).
 
 IGSN identifier strings may be formatted like:
 
