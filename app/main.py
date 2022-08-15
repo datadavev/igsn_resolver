@@ -25,7 +25,7 @@ DATACITE_PROFILE = "https://schema.datacite.org/"
 app = fastapi.FastAPI(
     title="IGSN Resolver",
     description=__doc__,
-    version="0.4.0",
+    version="0.4.1",
     contact={
         "name":"Dave Vieglais",
         "url": "https://github.com/datadavev/"
@@ -95,7 +95,7 @@ async def resolve(
     _link = [
         f'<{request.url}>; rel="canonical"',
         f'</.info/{info.normalized}>; type="application/json"; rel="alternate"; profile="{INFO_PROFILE}"',
-        f'<{url}>; rel="alternate" profile="{DATACITE_PROFILE}"',
+        f'<{url}>; rel="alternate"; profile="{DATACITE_PROFILE}"',
     ]
     headers = {
         "Link": ", ".join(_link)
