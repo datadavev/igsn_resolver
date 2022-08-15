@@ -26,6 +26,8 @@ The service will also accept DOIs identifier strings, for example:
 doi:10.1594/PANGAEA.930327
 ```
 
+### `/.info/{identifier}`
+
 The `/.info/{identifier}` endpoint will return metadata from the handle system about the identifier. For example:
 
 ```
@@ -69,11 +71,38 @@ curl "https://ule1dz.deta.dev/.info/au1234;10.1594/PANGAEA.930327" | jq '.'
 ]
 ```
 
-The resolve endpoint `/{identifier}` accepts a single identifier string and returns a redirect (status code 307) to the target address listed by the handle system. The behavior of this method can be modified by an optional `Accept-Profile` header sent by the client.
+### `/{identifier}`
 
-If the client includes an `Accept-Profile` header of `https://igsn.org/.info` the response is the same as a call to the `/.info/{identifier}` endpoint.
+The resolve endpoint `/{identifier}` accepts a single identifier string and returns a redirect (status code 307) to the target address listed by the handle system. For example:
+```
+curl -v -q "https://ule1dz.deta.dev/au1234"
+...
+< HTTP/1.1 307 Temporary Redirect
+< Link: <https://ule1dz.deta.dev/au1234>; rel="canonical", </.info/igsn:10273/au1234>; type="application/json"; rel="alternate"; profile="https://igsn.org/info", <https://hdl.handle.net/au1234/10273>; rel="alternate" profile="https://schema.datacite.org/"
+< Location: http://www.ga.gov.au/sample-catalogue/10273/AU1234
+```
+Note the `Link` header response which provides a hint to the client about alternate locations and profiles for accessing information about the identified resource as described below.
 
-If the client includes an `Accept-Profile` header of `https://schema.datacite.org/` then the redirect response is to the handle system resolve address, which will subsequently return a redirect to the known target.
+The behavior of this method can be modified by an optional `Accept-Profile` header sent by the client. 
+
+If the client includes an `Accept-Profile` header of `https://igsn.org/info` the response is the same as a call to the `/.info/{identifier}` endpoint. For example:
+
+```
+curl -q -H "Accept-Profile: https://igsn.org/info" \
+  "https://ule1dz.deta.dev/au1234"
+...
+{
+  "original": "au1234",
+  "scheme": "igsn",
+  "normalized": "igsn:10273/au1234",
+  "handle": "10273/au1234",
+  "target": "http://www.ga.gov.au/sample-catalogue/10273/AU1234",
+  "ttl": 86400,
+  "timestamp": "2015-07-22T05:19:38Z"
+}
+```
+
+If the client includes an `Accept-Profile` header of `https://schema.datacite.org/` then the redirect response is to the handle system resolve address, which will subsequently return a redirect to the known target. 
 
 This approach enables correct resolution of some resource content types (such as RDF formats) in the DOI system which otherwise return metadata about the identifier rather than the identified resource. The IGSN infrastructure is in the process of migrating to using DOI infrastructure provided by DataCite, and a service such as this will be necessary for correct resolution of IGSN identifiers when that change is implemented.
 
@@ -106,7 +135,7 @@ curl -q -v -H "Accept: application/ld+json" "https://ule1dz.deta.dev/10.1594/PAN
 < Link: <https://ule1dz.deta.dev/10.1594/PANGAEA.930327>; rel="canonical", </.info/doi:10.1594/PANGAEA.930327>; type="application/json"; rel="alternate"; profile="https://igsn.org/info", <https://hdl.handle.net/PANGAEA.930327/10.1594>; rel="alternate" profile="https://schema.datacite.org/"
 < Location: https://doi.pangaea.de/10.1594/PANGAEA.930327
 ```
-(note the `Link` header response which provides a hint to the client about alternate locations and profiles for accessing information about the identified resource).
+
 
 The DataCite metadata can still be retrieved by specifically requesting that format:
 
