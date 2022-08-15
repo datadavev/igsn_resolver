@@ -60,25 +60,25 @@ async def main_root():
     return fastapi.responses.RedirectResponse(url="/docs")
 
 
-@app.get("/.info/{igsn_str:path}", response_model=typing.List[igsnresolve.IGSNInfo])
+@app.get("/.info/{identifier:path}", response_model=typing.List[igsnresolve.IGSNInfo])
 async def igsn_info(
-    igsn_str: str, accept: typing.Union[str, None] = fastapi.Header(default=None)
+    identifier: str, accept: typing.Union[str, None] = fastapi.Header(default=None)
 ):
     """
     Return info from the handle system about one or more IGSNs (delimited by semi-colon).
 
     A request with more than 50 identifiers raises a 400 error.
     """
-    if igsn_str.count(";") > MAX_PER_REQUEST:
+    if identifier.count(";") > MAX_PER_REQUEST:
         return fastapi.HTTPException(status_code=400, detail="Too many items in request")
-    igsn_strs = igsn_str.split(";")
+    igsn_strs = identifier.split(";")
     return await igsnresolve.resolveIGSNs(igsn_strs)
 
 
-@app.get("/{igsn:path}")
+@app.get("/{identifier:path}")
 async def resolve(
     request: fastapi.Request,
-    igsn: str, accept_profile: typing.Union[str, None] = fastapi.Header(default=None)
+    identifier: str, accept_profile: typing.Union[str, None] = fastapi.Header(default=None)
 ):
     """
     Resolve the provided IGSN and redirect to the target.
@@ -89,7 +89,7 @@ async def resolve(
     If an `Accept-Profile` header with value `https://schema.datacite.org/` is provided,
     then the request is redirected to `hdl.handle.net`.
     """
-    info = igsnresolve.IGSNInfo(original=igsn)
+    info = igsnresolve.IGSNInfo(original=identifier)
     prefix, value = info.normalize()
     url = f"https://hdl.handle.net/{prefix}/{value}"
     _link = [
