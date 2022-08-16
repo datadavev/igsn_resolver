@@ -11,7 +11,7 @@ System_Ext(hdl, "Handle System")
 System_Ext(target, "Target")
 Rel_L(user, rui, "Via Web Browser")
 Rel(user, rigsn, "Direct API access")
-Rel(rigsn, hdl, "Lookup IGSN information")
+Rel_R(rigsn, hdl, "Lookup IGSN information")
 Rel(user, target, "Access target")
 Rel_R(hdl, target, "Has information about target")
 @enduml
