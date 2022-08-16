@@ -9,9 +9,9 @@ System_Boundary(ir, "igsn_resolver") {
 }
 System_Ext(hdl, "Handle System")
 System_Ext(target, "Target")
-Rel(user, rui, "Via Web Browser")
+Rel_L(user, rui, "Via Web Browser")
 Rel(user, rigsn, "Direct API access")
 Rel(rigsn, hdl, "Lookup IGSN information")
 Rel(user, target, "Access target")
-Rel_L(hdl, target, "Has information about target")
+Rel_R(hdl, target, "Has information about target")
 @enduml
