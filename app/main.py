@@ -23,6 +23,7 @@ MAX_PER_REQUEST = 50
 INFO_PROFILE = "https://igsn.org/info"
 DATACITE_PROFILE = "https://schema.datacite.org/"
 URL_SAFE_CHARS = ":/%#?=@[]!$&'()*+,;"
+DELIMITER = ","
 
 app = fastapi.FastAPI(
     title="IGSN Resolver",
@@ -68,11 +69,11 @@ async def igsn_info(
 
     A request with more than 50 identifiers raises a 400 error.
     """
-    if identifier.count(";") > MAX_PER_REQUEST:
+    if identifier.count(DELIMITER) > MAX_PER_REQUEST:
         return fastapi.HTTPException(
             status_code=400, detail="Too many items in request"
         )
-    identifier_strs = identifier.split(";")
+    identifier_strs = identifier.split(DELIMITER)
     return await igsnresolve.resolveIGSNs(identifier_strs)
 
 
