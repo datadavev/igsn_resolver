@@ -8,7 +8,7 @@ Performs IGSN resolution by leveraging the Handle System API.
 
 The service is composed of two components, the API which performs the resolution functions, and a minimal Web UI implemented as a Web Component. The UI component has minimal dependencies and may be deployed in any HTML page.
 
-![Container Diagram](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/container.puml)
+![Container Diagram](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/container.puml)
 
 
 A test instance of the API is deployed on [Deta](https://www.deta.sh/) at [https://ule1dz.deta.dev/](https://ule1dz.deta.dev/). The UI is deployed using GitHub pages, available at [https://datadavev.github.io/igsn_resolver/](https://datadavev.github.io/igsn_resolver/).
@@ -55,13 +55,13 @@ curl "https://ule1dz.deta.dev/.info/au1234" | jq '.'
 
 Where:
 <dl>
-  <dt>`original`</dt><dd>The provided identifier string.</dd>
-  <dt>`scheme`</dt><dd>Recognized identifier scheme, either "igsn" or "doi".</dd>
-  <dt>`normalized`</dt><dd>Normalized representation of the identifier string.</dd>
-  <dt>`handle`</dt><dd>Handle representation of the identifier string.</dd>
-  <dt>`target`</dt><dd>Identifier targer as reported by the Handle System.</dd>
-  <dt>`ttl`</dt><dd>Time to live in seconds, reported by the Handle System.</dd>
-  <dt>`timestamp`</dt><dd>The entry timestamp as reported by the Handle System.</dd>
+  <dt><code>original</code></dt><dd>The provided identifier string.</dd>
+  <dt><code>scheme</code></dt><dd>Recognized identifier scheme, either "igsn" or "doi".</dd>
+  <dt><code>normalized</code></dt><dd>Normalized representation of the identifier string.</dd>
+  <dt><code>handle</code></dt><dd>Handle representation of the identifier string.</dd>
+  <dt><code>target</code></dt><dd>Identifier targer as reported by the Handle System.</dd>
+  <dt><code>ttl</code></dt><dd>Time to live in seconds, reported by the Handle System.</dd>
+  <dt><code>timestamp</code></dt><dd>The entry timestamp as reported by the Handle System.</dd>
 </dl>
 
 Multiple identifiers (up to 50) may be sent to the `/.info/` endpoint using a semi-colon as a delimiter. For example:
