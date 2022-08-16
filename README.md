@@ -2,16 +2,21 @@
 
 Performs IGSN resolution by leveraging the Handle System API.
 
-`igsn_resolver` provides a simple proof of concept for an IGSN resolver service implemented using [FastAPI](https://fastapi.tiangolo.com/), deployable to [deta.sh](https://www.deta.sh/), and using the [handle.net](https://handle.net/proxy_servlet.html) resolution infrastructure while still respecting the expected behavior of content negotiation in anticipation of pending migration of IGSN to DOI infrastructure hosted by [DataCite](https://datacite.org/).
+`igsn_resolver` provides a simple proof of concept for an IGSN resolver service implemented using [FastAPI](https://fastapi.tiangolo.com/), and using the [handle.net](https://handle.net/proxy_servlet.html) resolution infrastructure while supporting expected behavior of content negotiation for RDF resource in anticipation of the migration of IGSN to DOI infrastructure hosted by [DataCite](https://datacite.org/).
 
 ![Context Diagram](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/context.puml)
 
+The service is composed of two components, the API which performs the resolution functions, and a minimal Web UI implemented as a Web Component. The UI component has minimal dependencies and may be deployed in any HTML page.
 
-A test instance is deployed at [https://ule1dz.deta.dev/](https://ule1dz.deta.dev/). It supports two endpoints, one for redirection, the other for basic metadata. These methods are described in the API documenation at [https://ule1dz.deta.dev/docs](https://ule1dz.deta.dev/docs).
+![Container Diagram](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/container.puml)
 
-A simple UI is deployed to GitHub pages at [https://datadavev.github.io/igsn_resolver/](https://datadavev.github.io/igsn_resolver/).
 
-IGSN identifier strings may be formatted like:
+A test instance of the API is deployed on [Deta](https://www.deta.sh/) at [https://ule1dz.deta.dev/](https://ule1dz.deta.dev/). The UI is deployed using GitHub pages, available at [https://datadavev.github.io/igsn_resolver/](https://datadavev.github.io/igsn_resolver/).
+
+
+The API supports two endpoints, one for redirection, the other for basic metadata. These methods are described in the API documenation at [https://ule1dz.deta.dev/docs](https://ule1dz.deta.dev/docs) with some examples below.
+
+Identifiers are provided as strings, and the service will attempt to normalize a provided identifier string prior to lookup. Examples of IGSN identifier strings that are recognized include:
 
 ```
 au1234
@@ -21,12 +26,13 @@ igsn:au1234
 igsn:10273/au1234
 ```
 
-The service will also accept DOIs identifier strings, for example:
+Since the service is using the handle system under the hood, DOI idnetifier strings are also accepted, for example:
 
 ```
 10.1594/PANGAEA.930327
 doi:10.1594/PANGAEA.930327
 ```
+
 
 ### `/.info/{identifier}`
 
@@ -46,6 +52,17 @@ curl "https://ule1dz.deta.dev/.info/au1234" | jq '.'
   }
 ]
 ```
+
+Where:
+<dl>
+  <dt>`original`</dt><dd>The provided identifier string.</dd>
+  <dt>`scheme`</dt><dd>Recognized identifier scheme, either "igsn" or "doi".</dd>
+  <dt>`normalized`</dt><dd>Normalized representation of the identifier string.</dd>
+  <dt>`handle`</dt><dd>Handle representation of the identifier string.</dd>
+  <dt>`target`</dt><dd>Identifier targer as reported by the Handle System.</dd>
+  <dt>`ttl`</dt><dd>Time to live in seconds, reported by the Handle System.</dd>
+  <dt>`timestamp`</dt><dd>The entry timestamp as reported by the Handle System.</dd>
+</dl>
 
 Multiple identifiers (up to 50) may be sent to the `/.info/` endpoint using a semi-colon as a delimiter. For example:
 
@@ -158,8 +175,7 @@ curl -q -v -H "Accept: application/ld+json" "https://ule1dz.deta.dev/10.1594/PAN
 < Location: https://doi.pangaea.de/10.1594/PANGAEA.930327
 ```
 
-
-The DataCite metadata can still be retrieved by specifically requesting that format:
+The DataCite metadata may be retrieved by specifically requesting that format:
 
 ```
 curl -q -v -H "Accept: application/ld+json" \
@@ -194,7 +210,7 @@ cd app
 uvicorn main:app --reload
 ```
 
-A push to `main` on the origin repo will result in a re-deployment to `deta.sh`.
+A push to `main` on the origin repo will result in a re-deployment to `deta.sh` and deployment of the web interface to GitHub pages.
 
 Tests can be run with `pytest`, e.g.:
 
@@ -211,3 +227,5 @@ tests/test_igsnresolve.py .............                                        [
 
 ================================= 13 passed in 1.33s =================================
 ```
+
+The web component is in the `identifier-resolver` folder. It is implemented in Javascript using [Lit](https://lit.dev/docs/) and may be deployed without building or bundling. See the [`README`](identifier-resolver/README.md) in that folder for details.
