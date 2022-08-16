@@ -64,10 +64,10 @@ Where:
   <dt><code>timestamp</code></dt><dd>The entry timestamp as reported by the Handle System.</dd>
 </dl>
 
-Multiple identifiers (up to 50) may be sent to the `/.info/` endpoint using a semi-colon as a delimiter. For example:
+Multiple identifiers (up to 50) may be sent to the `/.info/` endpoint using a comma as a delimiter. For example:
 
 ```
-curl "https://ule1dz.deta.dev/.info/au1234;10.1594/PANGAEA.930327" | jq '.'
+curl "https://ule1dz.deta.dev/.info/au1234,10.1594/PANGAEA.930327" | jq '.'
 [
   {
     "original": "au1234",
