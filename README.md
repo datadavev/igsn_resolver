@@ -4,7 +4,7 @@ Performs IGSN resolution by leveraging the Handle System API.
 
 `igsn_resolver` provides a simple proof of concept for an IGSN resolver service implemented using [FastAPI](https://fastapi.tiangolo.com/), and using the [handle.net](https://handle.net/proxy_servlet.html) resolution infrastructure while supporting expected behavior of content negotiation for RDF resource in anticipation of the migration of IGSN to DOI infrastructure hosted by [DataCite](https://datacite.org/).
 
-![Context Diagram](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/context.puml)
+![Context Diagram](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/context.puml)
 
 The service is composed of two components, the API which performs the resolution functions, and a minimal Web UI implemented as a Web Component. The UI component has minimal dependencies and may be deployed in any HTML page.
 
