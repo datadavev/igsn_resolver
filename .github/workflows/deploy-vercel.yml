@@ -4,7 +4,6 @@ on:
     branches:
       - vercel
   workflow_dispatch:
-
 jobs:
   deploy:
     runs-on: ${{ matrix.os }}
@@ -15,10 +14,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Deploy to Vercel step
-      - uses: BetaHuhn/deploy-to-vercel-action@v1
+      - uses: BetaHuhn/deploy-to-vercel-action@latest
         with:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
