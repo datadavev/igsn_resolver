@@ -6,6 +6,8 @@ address using the [hdl.handle.net API](http://www.handle.net/proxy_servlet.html)
 then either redirects the client to the target or presents
 basic metadata about the identifier.
 
+A simple UI is presented at https://datadavev.github.io/igsn_resolver/
+
 Run me like: `uvicorn main:app --reload`
 """
 import logging.config

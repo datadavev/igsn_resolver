@@ -11,10 +11,10 @@ The service is composed of two components, the API which performs the resolution
 ![Container Diagram](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/container.puml)
 
 
-A test instance of the API is deployed on [Deta](https://www.deta.sh/) at [https://ule1dz.deta.dev/](https://ule1dz.deta.dev/). The UI is deployed using GitHub pages, available at [https://datadavev.github.io/igsn_resolver/](https://datadavev.github.io/igsn_resolver/).
+A test instance of the API is deployed on [Vercel](https://vercel.com/) at [https://igsn-resolver.vercel.app/](https://igsn-resolver.vercel.app/). The UI is deployed using GitHub pages, available at [https://datadavev.github.io/igsn_resolver/](https://datadavev.github.io/igsn_resolver/).
 
 
-The API supports two endpoints, one for redirection, the other for basic metadata. These methods are described in the API documenation at [https://ule1dz.deta.dev/docs](https://ule1dz.deta.dev/docs) with some examples below.
+The API supports two endpoints, one for redirection, the other for basic metadata. These methods are described in the API documenation at [https://igsn-resolver.vercel.app/docs](https://igsn-resolver.vercel.app/docs) with some examples below.
 
 Identifiers are provided as strings, and the service will attempt to normalize a provided identifier string prior to lookup. Examples of IGSN identifier strings that are recognized include:
 
@@ -39,7 +39,7 @@ doi:10.1594/PANGAEA.930327
 The `/.info/{identifier}` endpoint will return metadata from the handle system about the identifier. For example:
 
 ```
-curl "https://ule1dz.deta.dev/.info/au1234" | jq '.'
+curl "https://igsn-resolver.vercel.app/.info/au1234" | jq '.'
 [
   {
     "original": "au1234",
@@ -67,7 +67,7 @@ Where:
 Multiple identifiers (up to 50) may be sent to the `/.info/` endpoint using a comma as a delimiter. For example:
 
 ```
-curl "https://ule1dz.deta.dev/.info/au1234,10.1594/PANGAEA.930327" | jq '.'
+curl "https://igsn-resolver.vercel.app/.info/au1234,10.1594/PANGAEA.930327" | jq '.'
 [
   {
     "original": "au1234",
@@ -94,11 +94,11 @@ curl "https://ule1dz.deta.dev/.info/au1234,10.1594/PANGAEA.930327" | jq '.'
 
 The resolve endpoint `/{identifier}` accepts a single identifier string and returns a redirect (status code 307) to the target address listed by the handle system. For example:
 ```
-curl -v -q "https://ule1dz.deta.dev/au1234"
+curl -v -q "https://igsn-resolver.vercel.app/au1234"
 ...
 < HTTP/1.1 307 Temporary Redirect
 < Link: 
-    <https://ule1dz.deta.dev/au1234>; 
+    <https://igsn-resolver.vercel.app/au1234>; 
         rel="canonical", 
     </.info/igsn:10273/au1234>; 
         type="application/json"; 
@@ -119,7 +119,7 @@ If the client includes an `Accept-Profile` header of `https://igsn.org/info` the
 
 ```
 curl -q -H "Accept-Profile: https://igsn.org/info" \
-  "https://ule1dz.deta.dev/au1234"
+  "https://igsn-resolver.vercel.app/au1234"
 ...
 {
   "original": "au1234",
@@ -159,7 +159,7 @@ curl -q -v -H "Accept: application/ld+json" "https://hdl.handle.net/10.1594/PANG
 Resolving the same identifier with this `igsn-resolver` service results in the expected location:
 
 ```
-curl -q -v -H "Accept: application/ld+json" "https://ule1dz.deta.dev/10.1594/PANGAEA.930327"
+curl -q -v -H "Accept: application/ld+json" "https://igsn-resolver.vercel.app/10.1594/PANGAEA.930327"
 ...
 < HTTP/1.1 307 Temporary Redirect
 < Link: 
@@ -180,11 +180,11 @@ The DataCite metadata may be retrieved by specifically requesting that format:
 ```
 curl -q -v -H "Accept: application/ld+json" \
   -H "Accept-Profile: https://schema.datacite.org/" \
-  "https://ule1dz.deta.dev/10.1594/PANGAEA.930327"
+  "https://igsn-resolver.vercel.app/10.1594/PANGAEA.930327"
 ...
 < HTTP/1.1 307 Temporary Redirect
 < Link: 
-    <https://ule1dz.deta.dev/10.1594/PANGAEA.930327>; 
+    <https://igsn-resolver.vercel.app/10.1594/PANGAEA.930327>; 
         rel="canonical", 
     </.info/doi:10.1594/PANGAEA.930327>; 
         type="application/json"; 
