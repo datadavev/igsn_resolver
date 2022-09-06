@@ -21,7 +21,7 @@ export class IdentifierResolver extends LitElement {
 
   constructor() {
     super();
-    this.idservice = 'https://ule1dz.deta.dev/';
+    this.idservice = 'https://igsn-resolver.vercel.app/';
     this.identifier = '';
     this._canfollow = true;
     this._target = null;
