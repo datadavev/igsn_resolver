@@ -1,5 +1,8 @@
 name: "Deploy to Vercel"
 on:
+  push:
+    branches:
+      - vercel
   workflow_dispatch:
 
 jobs:
