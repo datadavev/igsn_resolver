@@ -1,4 +1,9 @@
-import { html, css, LitElement } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js';
+// eslint-disable-next-line import/no-unresolved
+import {
+  html,
+  css,
+  LitElement,
+} from 'https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js';
 
 export class IdentifierResolver extends LitElement {
   static get styles() {
@@ -32,7 +37,8 @@ export class IdentifierResolver extends LitElement {
     return this.renderRoot?.querySelector('input#inp_identifier') ?? null;
   }
 
-  async updateIdentifierInfo(idStr) {
+  async updateIdentifierInfo() {
+    const idStr = this.identifier;
     const ele = this.renderRoot?.querySelector('pre#id_info') ?? null;
     ele.innerText = 'Loading...';
     const _this = this;
@@ -47,8 +53,8 @@ export class IdentifierResolver extends LitElement {
             _this._target = null;
           }
           _this._canfollow = _this._target !== null;
-          console.log(_this._target);
-          console.log(_this._canfollow);
+          window.console.log(_this._target);
+          window.console.log(_this._canfollow);
           ele.innerText = JSON.stringify(data[0], null, 2);
         });
     } else {
@@ -61,14 +67,13 @@ export class IdentifierResolver extends LitElement {
     clearTimeout(this._timeoutId);
     const _this = this;
     this._timeoutId = setTimeout(() => {
-      _this.updateIdentifierInfo(this.identifier);
+      _this.updateIdentifierInfo();
     }, 250);
   }
 
   followIdentifier() {
     if (this._target !== null) {
-      //window.location.href = this._target;
-      window.open(this._target, "_blank");
+      window.open(this._target, '_blank');
     }
   }
 
