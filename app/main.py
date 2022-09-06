@@ -14,6 +14,8 @@ import urllib.parse
 import fastapi
 import fastapi.responses
 import fastapi.middleware.cors
+import opentelemetry.instrumentation.fastapi
+import uptrace
 import igsnresolve
 
 logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
@@ -23,11 +25,12 @@ MAX_PER_REQUEST = 50
 INFO_PROFILE = "https://igsn.org/info"
 DATACITE_PROFILE = "https://schema.datacite.org/"
 URL_SAFE_CHARS = ":/%#?=@[]!$&'()*+,;"
+VERSION="0.6.0"
 
 app = fastapi.FastAPI(
     title="IGSN Resolver",
     description=__doc__,
-    version="0.5.0",
+    version=VERSION,
     contact={"name": "Dave Vieglais", "url": "https://github.com/datadavev/"},
     license_info={
         "name": "Apache 2.0",
@@ -47,6 +50,8 @@ app.add_middleware(
         "*",
     ],
 )
+uptrace.configure_opentelemetry(service_name="igsn_resolver",service_version=VERSION)
+opentelemetry.instrumentation.fastapi.FastAPIInstrumentor.instrument_app(app)
 
 
 @app.get("/favicon.ico", include_in_schema=False)
