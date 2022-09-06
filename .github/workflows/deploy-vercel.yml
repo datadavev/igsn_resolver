@@ -1,0 +1,28 @@
+name: "Deploy to Vercel"
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Deploy to Vercel step
+      - uses: BetaHuhn/deploy-to-vercel-action@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          deta-access-token: ${{ secrets.DETA_TOKEN }}
+          deta-name: 'igsn_resolver'
+          deta-project: 'igsn'
+          deta-project-dir: './app'
+
