@@ -1,0 +1,4 @@
+click
+httpx
+python-dateutil
+beautifulsoup4
