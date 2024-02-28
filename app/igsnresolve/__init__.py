@@ -12,6 +12,7 @@ import pydantic
 TIMEOUT = 2.0  # seconds
 DEFAULT_PREFIX = "10273"
 HANDLE_API = "https://hdl.handle.net/api/handles/"
+DATACITE_API = "https://api.datacite.org"
 SCHEME_PATTERN = re.compile("^([\w]{2,4}):", re.IGNORECASE)
 
 L = logging.getLogger("igsnresolve")
@@ -25,11 +26,9 @@ class IGSNInfo(pydantic.BaseModel):
     target: typing.Union[None, str] = None
     ttl: typing.Union[None, int] = None
     timestamp: typing.Union[None, str] = None
-    _prefix: typing.Union[None, str] = None
-    _value: typing.Union[None, str] = None
-
-    class Config:
-        underscore_attrs_are_private = True
+    messages: typing.List[str] = []
+    _prefix: typing.Union[None, str] = pydantic.PrivateAttr(None)
+    _value: typing.Union[None, str] = pydantic.PrivateAttr(None)
 
     def parse(self, v: str = None) -> (str, str):
         """
@@ -54,22 +53,24 @@ class IGSNInfo(pydantic.BaseModel):
             self._prefix = parts[0]
             self._value = parts[1]
         else:
-            self._prefix = DEFAULT_PREFIX
+            #self._prefix = DEFAULT_PREFIX
+            self._prefix = None
             self._value = parts[0]
         if self.scheme is None:
-            if self._prefix.startswith("10."):
-                self.scheme = "doi"
-            else:
-                self.scheme = "igsn"
+            #if self._prefix.startswith("10."):
+            #    self.scheme = "doi"
+            #else:
+            self.scheme = "igsn"
         return self._prefix, self._value
 
     def normalize(self, v: str = None) -> (str, str):
         """
         Populates self.normalized and returns prefix, value
         """
-        if self._value is None or self._prefix is None:
+        if v is not None and (self._value is None or self._prefix is None):
             self.parse(v=v)
-        self.handle = f"{self._prefix}/{self._value}"
+        if self.handle is None or self.handle == '':
+            self.handle = f"{self._prefix}/{self._value}"
         self.normalized = f"{self.scheme}:{self.handle}"
         return self._value, self._prefix
 
@@ -95,6 +96,42 @@ class IGSNInfo(pydantic.BaseModel):
                 self.timestamp = vals[0].get("timestamp", None)
         return True
 
+    async def resolve_datacite(self, client: httpx.AsyncClient) -> bool:
+        """
+        Lookup the target for the provided original IGSN
+        """
+        if self._value is None or self._prefix is None:
+            _ = self.parse()
+        headers = {"Accept": "application/vnd.api+json"}
+        params = {
+            #"query": f"id:10.*/{self._value.lower()}",
+            "query": f"suffix:{self._value.lower()}",
+            "resource-type-id": "physical-object",
+            "fields[dois]": ["id,url,updated"],
+        }
+        url = f"{DATACITE_API}/dois"
+        try:
+            response = await client.get(url, headers=headers, params=params)
+            if response.status_code == 200:
+                data = response.json()
+                entries = data.get("data", [])
+                if len(entries) == 0:
+                    self.messages.append("Warning: no match found")
+                    return False
+                if len(entries) > 1:
+                    self.messages.append("Warning: more than one match, returning first only")
+                self.handle = entries[0].get("id", None)
+                _parts = self.handle.split("/",1)
+                if len(_parts) > 1:
+                    self._prefix = _parts[0]
+                self.target = entries[0].get("attributes", {}).get("url", None)
+                self.timestamp = entries[0].get("attributes", {}).get("updated", None)
+                self.normalize()
+                return True
+        except Exception as e:
+            self.messages.append(str(e))
+        return False
+
 
 async def resolve(igsn: typing.Union[str, IGSNInfo]) -> IGSNInfo:
     """
@@ -105,8 +142,12 @@ async def resolve(igsn: typing.Union[str, IGSNInfo]) -> IGSNInfo:
         info = IGSNInfo(original=igsn)
     else:
         info = igsn
+    igsn.normalize()
     async with httpx.AsyncClient(timeout=TIMEOUT) as client:
-        _ = await info.resolve(client)
+        if info._prefix is not None:
+            _ = await info.resolve(client)
+        else:
+            _ = await info.resolve_datacite(client)
     return info
 
 
@@ -118,7 +159,10 @@ async def resolveIGSNs(igsn_strs: typing.List[str]) -> typing.List[IGSNInfo]:
     try:
         tasks = []
         for igsn in igsns:
-            tasks.append(igsn.resolve(client))
+            if igsn._prefix is not None:
+                tasks.append(igsn.resolve(client))
+            else:
+                tasks.append(igsn.resolve_datacite(client))
         await asyncio.gather(*tasks)
     finally:
         await client.aclose()

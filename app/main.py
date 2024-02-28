@@ -3,12 +3,10 @@ A basic IGSN resolver implementation.
 
 This service receives an IGSN identifier and looks up the target
 address using the [hdl.handle.net API](http://www.handle.net/proxy_servlet.html),
-then either redirects the client to the target or presents
-basic metadata about the identifier.
+or if the provided identifier is incomplete, uses the DataCite API
+to look for a matching IGSn identifier.
 
 A simple UI is presented at https://datadavev.github.io/igsn_resolver/
-
-Run me like: `uvicorn main:app --reload`
 """
 import logging.config
 import typing
@@ -100,6 +98,12 @@ async def resolve(
     then the request is redirected to `hdl.handle.net`.
     """
     info = igsnresolve.IGSNInfo(original=identifier)
+    try:
+        info = await igsnresolve.resolve(info)
+    except Exception as e:
+        L.exception(e)
+        raise fastapi.HTTPException(status_code=500,
+                                    detail="Error processing request.")
     prefix, value = info.normalize()
     url = urllib.parse.quote(f"https://hdl.handle.net/{prefix}/{value}", safe=URL_SAFE_CHARS)
     _link = [
@@ -118,7 +122,7 @@ async def resolve(
             media_type="application/json",
         )
     try:
-        info = await igsnresolve.resolve(info)
+        #info = await igsnresolve.resolve(info)
         if info.target is not None:
             if accept_profile == INFO_PROFILE:
                 return fastapi.responses.JSONResponse(content=info, headers=headers)

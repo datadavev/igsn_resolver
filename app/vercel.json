@@ -3,6 +3,9 @@
   "public": false,
   "builds": [{ "src": "main.py", "use": "@vercel/python" }],
   "routes": [
-    { "src": "/(.*)", "dest": "main.py" }
+    {"src": "/.info(.*)", "dest":"main.py"},
+    {"src": "/docs(.*)", "dest":"main.py"},
+    {"src": "/(igsn(:|%3A).*)", "dest":"main.py"},
+    {"src": "/(.*)", "dest": "main.py"}
   ]
 }
