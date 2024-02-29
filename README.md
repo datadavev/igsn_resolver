@@ -1,8 +1,13 @@
 # igsn_resolver
 
-Performs IGSN resolution by leveraging the Handle System API.
+NOTE: These docs are out of date and are in the process of being updated. The implementation has changed significantly since these were written, most notably IGSNs are now managed by DataCite and the underlying implementation of this service is being modified to leverage the DataCite API to assist with IGSN resolution.
 
-`igsn_resolver` provides a simple proof of concept for an IGSN resolver service implemented using [FastAPI](https://fastapi.tiangolo.com/), and using the [handle.net](https://handle.net/proxy_servlet.html) resolution infrastructure while supporting expected behavior of content negotiation for RDF resource in anticipation of the migration of IGSN to DOI infrastructure hosted by [DataCite](https://datacite.org/).
+
+
+
+Performs IGSN resolution by leveraging the DataCite API.
+
+`igsn_resolver` provides a simple proof of concept for an IGSN resolver service implemented using [FastAPI](https://fastapi.tiangolo.com/), and using the [DataCite API](https://support.datacite.org/docs/api) and optionally the [handle.net](https://handle.net/proxy_servlet.html) infrastructure while supporting expected behavior of content negotiation for RDF resources.
 
 ![Context Diagram](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/datadavev/igsn_resolver/main/UML/context.puml)
 

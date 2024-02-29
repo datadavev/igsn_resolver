@@ -27,6 +27,7 @@ class IGSNInfo(pydantic.BaseModel):
     ttl: typing.Union[None, int] = None
     timestamp: typing.Union[None, str] = None
     messages: typing.List[str] = []
+    metadata: typing.Optional[dict] = None
     _prefix: typing.Union[None, str] = pydantic.PrivateAttr(None)
     _value: typing.Union[None, str] = pydantic.PrivateAttr(None)
 
@@ -96,7 +97,7 @@ class IGSNInfo(pydantic.BaseModel):
                 self.timestamp = vals[0].get("timestamp", None)
         return True
 
-    async def resolve_datacite(self, client: httpx.AsyncClient) -> bool:
+    async def resolve_datacite(self, client: httpx.AsyncClient, full_metadata:bool=False) -> bool:
         """
         Lookup the target for the provided original IGSN
         """
@@ -107,8 +108,9 @@ class IGSNInfo(pydantic.BaseModel):
             #"query": f"id:10.*/{self._value.lower()}",
             "query": f"suffix:{self._value.lower()}",
             "resource-type-id": "physical-object",
-            "fields[dois]": ["id,url,updated"],
         }
+        if not full_metadata:
+            params["fields[dois]"] = "id,url,updated"
         url = f"{DATACITE_API}/dois"
         try:
             response = await client.get(url, headers=headers, params=params)
@@ -127,13 +129,15 @@ class IGSNInfo(pydantic.BaseModel):
                 self.target = entries[0].get("attributes", {}).get("url", None)
                 self.timestamp = entries[0].get("attributes", {}).get("updated", None)
                 self.normalize()
+                if full_metadata:
+                    self.metadata = entries[0]
                 return True
         except Exception as e:
             self.messages.append(str(e))
         return False
 
 
-async def resolve(igsn: typing.Union[str, IGSNInfo]) -> IGSNInfo:
+async def resolve(igsn: typing.Union[str, IGSNInfo], full_metadata:bool=False) -> IGSNInfo:
     """
     Given an IGSN string or IGSNInfo instance, return
     a populated IGSNInfo structure.
@@ -147,11 +151,11 @@ async def resolve(igsn: typing.Union[str, IGSNInfo]) -> IGSNInfo:
         if info._prefix is not None:
             _ = await info.resolve(client)
         else:
-            _ = await info.resolve_datacite(client)
+            _ = await info.resolve_datacite(client, full_metadata=full_metadata)
     return info
 
 
-async def resolveIGSNs(igsn_strs: typing.List[str]) -> typing.List[IGSNInfo]:
+async def resolveIGSNs(igsn_strs: typing.List[str], full_metadata:bool=None) -> typing.List[IGSNInfo]:
     igsns = []
     for igsn_str in igsn_strs:
         igsns.append(IGSNInfo(original=igsn_str))
@@ -162,7 +166,7 @@ async def resolveIGSNs(igsn_strs: typing.List[str]) -> typing.List[IGSNInfo]:
             if igsn._prefix is not None:
                 tasks.append(igsn.resolve(client))
             else:
-                tasks.append(igsn.resolve_datacite(client))
+                tasks.append(igsn.resolve_datacite(client, full_metadata=full_metadata))
         await asyncio.gather(*tasks)
     finally:
         await client.aclose()

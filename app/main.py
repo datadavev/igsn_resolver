@@ -79,7 +79,7 @@ async def igsn_info(
             status_code=400, detail="Too many items in request"
         )
     identifier_strs = identifier.split(DELIMITER)
-    return await igsnresolve.resolveIGSNs(identifier_strs)
+    return await igsnresolve.resolveIGSNs(identifier_strs, full_metadata=True)
 
 
 @app.get("/{identifier:path}")
