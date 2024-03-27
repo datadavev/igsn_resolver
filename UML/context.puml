@@ -2,9 +2,10 @@
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 Person(user, "User")
 System(rigsn, "igsn_resolver", "This IGSN resolver service")
-System_Ext(hdl, "Handle System")
+System_Ext(hdl, "DataCite")
 System_Ext(target, "Target")
 Rel_R(user, rigsn, "Resolve IGSN to target")
+Rel_L(rigsn, user, "Target location and metadata")
 Rel(rigsn, hdl, "Lookup IGSN information")
 Rel(user, target, "Access target")
 Rel_L(hdl, target, "Has information about target")

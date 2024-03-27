@@ -7,10 +7,11 @@ System_Boundary(ir, "igsn_resolver") {
     System(rigsn, "igsn_resolver API", "Resolver Service.\nFastAPI instance deployed as serverless, docker, or conventional")
     Rel(rui, rigsn, "Uses API")
 }
-System_Ext(hdl, "Handle System")
+System_Ext(hdl, "DataCite")
 System_Ext(target, "Target")
 Rel_L(user, rui, "Via Web Browser")
-Rel(user, rigsn, "Direct API access")
+Rel(user, rigsn, "Via API")
+Rel(rigsn, user, "Target and metadata")
 Rel_R(rigsn, hdl, "Lookup IGSN information")
 Rel(user, target, "Access target")
 Rel_R(hdl, target, "Has information about target")
