@@ -1,7 +1,7 @@
 {
   "name": "identifier-resolver",
   "description": "Webcomponent identifier-resolver following open-wc recommendations",
-  "license": "MIT",
+  "license": "AGPLv3",
   "author": "identifier-resolver",
   "version": "0.0.0",
   "main": "index.js",

@@ -1,12 +1,29 @@
 """
-A basic IGSN resolver implementation.
+An IGSN identifier resolver implementation.
 
 This service receives an IGSN identifier and looks up the target
-address using the [hdl.handle.net API](http://www.handle.net/proxy_servlet.html),
+address using the [hdl.handle.net API](http://www.handle.net/proxy_servlet.html)
 or if the provided identifier is incomplete, uses the DataCite API
 to look for a matching IGSN identifier.
 
 A simple UI is presented at https://datadavev.github.io/igsn_resolver/
+"""
+"""
+An IGSN identifier resolver implementation.
+Copyright (C) 2023-2024  Dave Vieglais
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import logging.config
 import typing
