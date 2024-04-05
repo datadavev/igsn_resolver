@@ -33,7 +33,7 @@ import fastapi.responses
 import fastapi.middleware.cors
 import opentelemetry.instrumentation.fastapi
 import uptrace
-from . import igsnresolve
+import igsnresolve
 
 logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 L = logging.getLogger("resolver")
@@ -51,8 +51,8 @@ app = fastapi.FastAPI(
     version=VERSION,
     contact={"name": "Dave Vieglais", "url": "https://github.com/datadavev/"},
     license_info={
-        "name": "Apache 2.0",
-        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+        "name": "AGPLv3",
+        "url": "https://www.gnu.org/licenses/agpl-3.0.html",
     },
 )
 app.add_middleware(
