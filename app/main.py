@@ -3,10 +3,8 @@ An IGSN identifier resolver implementation.
 
 This service receives an IGSN identifier and looks up the target
 address using the [hdl.handle.net API](http://www.handle.net/proxy_servlet.html)
-or if the provided identifier is incomplete, uses the DataCite API
+or if the provided identifier is incomplete, uses the [DataCite API](https://support.datacite.org/docs/api)
 to look for a matching IGSN identifier.
-
-A simple UI is presented at https://datadavev.github.io/igsn_resolver/
 """
 """
 An IGSN identifier resolver implementation.
