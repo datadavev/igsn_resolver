@@ -31,7 +31,9 @@ import urllib.parse
 import fastapi
 import fastapi.responses
 import fastapi.middleware.cors
+import fastapi.staticfiles
 import opentelemetry.instrumentation.fastapi
+import starlette.responses
 import uptrace
 import igsnresolve
 
@@ -72,6 +74,12 @@ uptrace.configure_opentelemetry(service_name="igsn_resolver",service_version=VER
 opentelemetry.instrumentation.fastapi.FastAPIInstrumentor.instrument_app(app)
 
 
+app.mount(
+    "/static",
+    fastapi.staticfiles.StaticFiles(directory="static"),
+    name="static",
+)
+
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
     raise fastapi.HTTPException(status_code=404)
@@ -79,7 +87,10 @@ async def favicon():
 
 @app.get("/", include_in_schema=False)
 async def main_root():
-    return fastapi.responses.RedirectResponse(url="/docs")
+    return starlette.responses.FileResponse(
+        "static/index.html"
+    )
+    #return fastapi.responses.RedirectResponse(url="/docs")
 
 
 @app.get("/.info/{identifier:path}", response_model=typing.List[igsnresolve.IGSNInfo])

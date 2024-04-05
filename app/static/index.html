@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "WebPage",
+      "relatedLink": [
+        "https://igsn-resolver.vercel.app/",
+        "https://github.com/datadavev/igsn-resolver"
+      ],
+      "abstract": "Provides an example UI for an IGSN resolver service with a reusable Web Component.",
+      "author": {
+        "@type": "Person",
+        "@id": "https://orcid.org/0000-0002-6513-4996"
+      },
+      "dateCreated": "2022-08-15",
+      "dateModified": "2024-04-05",
+      "keywords": [
+        "identifier","IGSN","resolver","DOI"
+      ],
+      "license": "https://opensource.org/license/agpl-v3"
+    }
+  </script>
+  <title>Resolve IGSN or DOI</title>
+  <script type="module" src="/static/identifier-resolver.js"></script>
+</head>
+<body>
+  <header>
+  </header>
+  <section>
+    <h1>IGSN Resolver</h1>
+    <details>
+        <summary>About</summary>
+        <p>This service resolves IGSN identifiers to their target resource or provides metadata about the resource as provided by the <a href="https://support.datacite.org/docs/api">DataCite API</a>.</p>
+        <p>The Open API description for this service is described at <a href="/docs"><code>/docs</code></a>.</p>
+        <p>The IGSN value may be entered in various ways, and it should be noted that IGSN values are not case-sensitive. The following provides representation examples for the same IGSN identifier:</p>
+          <ul>
+            <li><code>IEBJS000K</code></li>
+            <li><code>IGSN:IEBJS000K</code></li>
+            <li><code>10.58052/IEBJS000K</code></li>
+            <li><code>IGSN:10.58052/IEBJS000K</code></li>
+            <li><code>DOI:10.58052/IEBJS000K</code></li>
+          </ul>
+        <p>Expressed in a URL that resolves to the target: <a href="https://igsn.rslv.xyz/igsn:10.58052/IEBJS000K"><code>https://igsn.rslv.xyz/igsn:10.58052/IEBJS000K</code></a></p>
+        <p>Expressed in a URL that resolves to the metadata: <a href="https://igsn.rslv.xyz/.info/igsn:10.58052/IEBJS000K"><code>https://igsn.rslv.xyz/.info/igsn:10.58052/IEBJS000K</code></a></p>
+    </details>
+      <p>Enter an IGSN identifier to resolve:</p>
+    <identifier-resolver></identifier-resolver>
+  </section>
+  <footer></footer>
+</body>
+</html>
