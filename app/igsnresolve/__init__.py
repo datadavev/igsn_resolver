@@ -23,7 +23,7 @@ import httpx
 import pydantic
 
 
-TIMEOUT = 2.0  # seconds
+TIMEOUT = 5.0  # seconds
 DEFAULT_PREFIX = "10273"
 HANDLE_API = "https://hdl.handle.net/api/handles/"
 DATACITE_API = "https://api.datacite.org"
